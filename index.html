@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meme Button Box - Neumorphism</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      /* Farben für Neumorphismus-Design (angelehnt an das linke Bild) */
+      --background-color: #e0e0e0; /* Heller, neutraler Hintergrund */
+      --button-main-color: #e0e0e0; /* Button-Hauptfarbe (gleich dem Hintergrund) */
+      --button-border-color: #a32723; /* Akzentfarbe für den Ring (ähnlich dem Grün) */
+      --text-color: #34495e; /* Dunkler Text/Icon für Kontrast */
+
+      /* Neumorphismus-Schatten */
+      --neumorphic-light-shadow: #ffffff; /* Heller Schatten (von oben links) */
+      --neumorphic-dark-shadow: #a3b1c6;  /* Dunkler Schatten (von unten rechts) */
+      --shadow-blur: 10px; /* Weichheit der Schatten */
+      --shadow-distance: 8px; /* Abstand der Schatten */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-color);
+    }
+
+    h1 {
+      margin: 40px 0 20px;
+      font-size: 38px;
+      font-weight: bold;
+      color: var(--text-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Leichter Schatten für den Titel */
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(140px, 1fr));
+      gap: 30px;
+      width: 90%;
+      max-width: 1200px;
+      padding: 20px;
+      margin-bottom: 80px;
+    }
+
+    .sound-button {
+      position: relative;
+      width: 100%;
+      padding: 30px 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-color);
+      background-color: var(--button-main-color); /* Button-Farbe gleich Hintergrund */
+      border: none; /* Kein expliziter Rand mehr, der Neumorphismus-Effekt ersetzt ihn */
+      border-radius: 50%;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+      outline: none;
+      
+      /* NEU: Neumorphismus-Schatten für "erhoben" Zustand */
+      box-shadow:
+        var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--neumorphic-dark-shadow),
+        calc(var(--shadow-distance) * -1) calc(var(--shadow-distance) * -1) var(--shadow-blur) var(--neumorphic-light-shadow);
+      
+      transition: all 0.2s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.2;
+      text-decoration: none;
+    }
+
+    /* NEU: Ring um den Button */
+    .sound-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - 20px); /* Größe des Rings */
+        height: calc(100% - 20px); /* Größe des Rings */
+        border-radius: 50%;
+        border: 4px solid var(--button-border-color); /* Die grüne Akzentfarbe */
+        opacity: 0.8; /* Leichte Transparenz für den Ring */
+        pointer-events: none; /* Stellt sicher, dass Klicks durchgehen */
+    }
+
+    .sound-button:hover {
+      /* Minimaler Lift beim Hover, um den erhabenen Zustand zu betonen */
+      transform: translateY(-1px);
+      box-shadow:
+        calc(var(--shadow-distance) + 2px) calc(var(--shadow-distance) + 2px) calc(var(--shadow-blur) + 2px) var(--neumorphic-dark-shadow),
+        calc((var(--shadow-distance) + 2px) * -1) calc((var(--shadow-distance) + 2px) * -1) calc(var(--shadow-blur) + 2px) var(--neumorphic-light-shadow);
+    }
+
+    .sound-button:active {
+      /* NEU: Neumorphismus-Schatten für "eingedrückt" Zustand */
+      transform: translateY(0); /* Button bewegt sich nicht mehr vertikal */
+      box-shadow:
+        inset var(--shadow-distance) var(--shadow-distance) var(--shadow-blur) var(--neumorphic-dark-shadow),
+        inset calc(var(--shadow-distance) * -1) calc(var(--shadow-distance) * -1) var(--shadow-blur) var(--neumorphic-light-shadow);
+      transition: all 0.1s ease-in; /* Schnellerer Übergang beim Klicken */
+    }
+
+    .material-icons {
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: var(--text-color); /* Icon Farbe */
+    }
+
+    #audio-player {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    /* Responsive Anpassungen (unverändert) */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 32px;
+      }
+      .button-grid {
+        grid-template-columns: repeat(2, minmax(130px, 1fr));
+        gap: 20px;
+        padding: 15px;
+      }
+      .sound-button {
+        padding: 25px 15px;
+        font-size: 20px;
+      }
+      .material-icons {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .button-grid {
+        grid-template-columns: repeat(2, minmax(100px, 1fr));
+        gap: 15px;
+      }
+      .sound-button {
+        padding: 20px 10px;
+        font-size: 18px;
+        margin-bottom: 0px;
+      }
+      .material-icons {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 28px;
+        margin-top: 30px;
+      }
+      .button-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px;
+      }
+      .sound-button {
+        padding: 20px 10px;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .material-icons {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>COS-Soundboard</h1>
+
+  <div class="button-grid">
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Titanic Flute Fail SOUND NO COPYRIGHT.mp3')">
+      <span class="material-icons">sentiment_very_dissatisfied</span> Wate Wate
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Antoine leiht Auto von Ernährungsberaterin-[AudioTrimmer.com].mp3')">
+      <span class="material-icons">help_outline</span> Komm klar
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Sad Violin - Sound Effect (HD).mp3')">
+      <span class="material-icons">heart_broken</span> OH-Henni
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Dann können wir es lassen.mp3')">
+      <span class="material-icons">block</span> Batch-Man
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Reel_Lachen.mp3')">
+      <span class="material-icons">sentiment_very_satisfied</span> Horrido
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Reel_Lachen.mp3')">
+      <span class="material-icons">sentiment_very_dissatisfied</span> Schnarchen
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Reel_Lachen.mp3')">
+      <span class="material-icons">sentiment_very_dissatisfied</span> BMW-Crash
+    </button>
+    <button class="sound-button" onclick="playSound('https://HTML-Apps.github.io/MemeSelector/Reel_Lachen.mp3')">
+      <span class="material-icons">sentiment_very_dissatisfied</span> Hihihihi
+    </button>
+  </div>
+
+  <div id="audio-player">
+    <audio id="player" controls style="width:100%; max-width:600px;"></audio>
+  </div>
+
+  <script>
+    function playSound(url) {
+      const player = document.getElementById('player');
+      player.src = url;
+      player.play();
+    }
+  </script>
+</body>
+</html>
